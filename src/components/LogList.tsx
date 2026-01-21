@@ -1,7 +1,25 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+
+// Hoisted static SVG to avoid recreation on every render
+const searchIcon = (
+	<svg
+		className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted)]"
+		fill="none"
+		viewBox="0 0 24 24"
+		strokeWidth={2}
+		stroke="currentColor"
+		aria-hidden="true"
+	>
+		<path
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+		/>
+	</svg>
+);
 
 interface LogMeta {
 	slug: string;
@@ -44,7 +62,6 @@ const ITEMS_PER_PAGE = 10;
 export default function LogList({ logs }: LogListProps) {
 	const [search, setSearch] = useState("");
 	const [displayCount, setDisplayCount] = useState(ITEMS_PER_PAGE);
-	const loaderRef = useRef<HTMLDivElement>(null);
 
 	// Filter logs based on search
 	const filteredLogs = logs.filter((log) => {
@@ -62,57 +79,30 @@ export default function LogList({ logs }: LogListProps) {
 		setDisplayCount(ITEMS_PER_PAGE);
 	}, [search]);
 
-	// Infinite scroll with Intersection Observer
-	const loadMore = useCallback(() => {
-		if (displayCount < filteredLogs.length) {
-			setDisplayCount((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredLogs.length));
-		}
-	}, [displayCount, filteredLogs.length]);
-
-	useEffect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				if (entries[0].isIntersecting) {
-					loadMore();
-				}
-			},
-			{ threshold: 0.1 }
-		);
-
-		if (loaderRef.current) {
-			observer.observe(loaderRef.current);
-		}
-
-		return () => observer.disconnect();
-	}, [loadMore]);
-
 	const visibleLogs = filteredLogs.slice(0, displayCount);
 	const hasMore = displayCount < filteredLogs.length;
+	const remainingCount = filteredLogs.length - displayCount;
+
+	const loadMore = () => {
+		setDisplayCount((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredLogs.length));
+	};
 
 	return (
 		<div>
 			{/* Search */}
 			<div className="mb-6">
+				<label htmlFor="log-search" className="sr-only">
+					Search logs
+				</label>
 				<div className="relative">
-					<svg
-						className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted)]"
-						fill="none"
-						viewBox="0 0 24 24"
-						strokeWidth={2}
-						stroke="currentColor"
-						aria-hidden="true"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-						/>
-					</svg>
+					{searchIcon}
 					<input
+						id="log-search"
 						type="search"
 						placeholder="Search logs by title, tag, or date..."
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
+						autoComplete="off"
 						className="w-full rounded-lg border border-[var(--border)] bg-[var(--card)] py-2.5 pl-10 pr-4 text-sm placeholder:text-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
 					/>
 				</div>
@@ -177,18 +167,16 @@ export default function LogList({ logs }: LogListProps) {
 				</div>
 			)}
 
-			{/* Infinite scroll loader */}
+			{/* Load more button */}
 			{hasMore && (
-				<div ref={loaderRef} className="flex justify-center py-8">
-					<div className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--border)] border-t-[var(--accent)]" />
+				<div className="flex justify-center pt-6">
+					<button
+						onClick={loadMore}
+						className="rounded-lg border border-[var(--border)] bg-[var(--card)] px-6 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)]"
+					>
+						Load more ({remainingCount} remaining)
+					</button>
 				</div>
-			)}
-
-			{/* End of list */}
-			{!hasMore && filteredLogs.length > ITEMS_PER_PAGE && (
-				<p className="py-6 text-center text-sm text-[var(--muted)]">
-					End of logs
-				</p>
 			)}
 		</div>
 	);
