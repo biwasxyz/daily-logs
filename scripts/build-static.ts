@@ -107,6 +107,8 @@ async function parseAllLogs(): Promise<LogData[]> {
 		const stats = extractStats(markdown);
 
 		const processed = await remark().use(gfm).use(html).process(markdown);
+		// Remove first h1 from content since we display title separately
+		const contentHtml = processed.toString().replace(/^<h1>.*?<\/h1>\n?/, "");
 
 		logs.push({
 			slug,
@@ -114,7 +116,7 @@ async function parseAllLogs(): Promise<LogData[]> {
 			date: data.date instanceof Date ? data.date.toISOString().split("T")[0] : data.date,
 			tags: data.tags || [],
 			excerpt: "",
-			contentHtml: processed.toString(),
+			contentHtml,
 			commits: stats.commits,
 			prs: stats.prs,
 		});
@@ -192,7 +194,8 @@ a:hover {
 }
 
 .header-content {
-	padding: 1.5rem 0;
+	padding-top: 1.5rem;
+	padding-bottom: 1.5rem;
 }
 
 .header h1 {
@@ -209,7 +212,8 @@ a:hover {
 
 @media (min-width: 640px) {
 	.header-content {
-		padding: 2.5rem 0;
+		padding-top: 2.5rem;
+		padding-bottom: 2.5rem;
 	}
 	.header h1 {
 		font-size: 2rem;
@@ -404,22 +408,30 @@ a:hover {
 }
 
 .log-meta {
-	display: flex;
-	align-items: center;
-	gap: 0.75rem;
-	flex-shrink: 0;
-	font-size: 0.75rem;
-	color: var(--muted);
+	display: none;
 }
 
 .log-relative {
-	display: none;
+	font-size: 0.875rem;
+	color: var(--muted);
 }
 
 .log-stats {
 	display: flex;
-	gap: 0.5rem;
+	gap: 0.75rem;
+	margin-top: 0.5rem;
+	font-size: 0.75rem;
+	color: var(--muted);
 	font-variant-numeric: tabular-nums;
+}
+
+.log-stats-mobile {
+	display: flex;
+	margin-left: 0.5rem;
+}
+
+.log-stats-desktop {
+	display: none;
 }
 
 @media (min-width: 640px) {
@@ -431,17 +443,16 @@ a:hover {
 		font-size: 0.75rem;
 	}
 	.log-meta {
-		flex-direction: column;
-		align-items: flex-end;
-		gap: 0.5rem;
-		text-align: right;
-		font-size: 0.875rem;
-	}
-	.log-relative {
 		display: block;
+		text-align: right;
+		flex-shrink: 0;
 	}
-	.log-stats {
-		gap: 0.75rem;
+	.log-stats-mobile {
+		display: none;
+	}
+	.log-stats-desktop {
+		display: flex;
+		justify-content: flex-end;
 	}
 }
 
@@ -641,7 +652,8 @@ a:hover {
 }
 
 .footer-content {
-	padding: 1.5rem 0;
+	padding-top: 1.5rem;
+	padding-bottom: 1.5rem;
 }
 
 /* Focus styles */
@@ -686,6 +698,62 @@ main.container {
 	main.container {
 		padding-top: 2rem;
 		padding-bottom: 2rem;
+	}
+}
+
+/* Article page mobile styles */
+.article-header h1 {
+	font-size: 1.5rem;
+	line-height: 1.3;
+}
+
+.prose h1 {
+	font-size: 1.5rem;
+}
+
+.prose h2 {
+	font-size: 1.25rem;
+}
+
+.prose h3 {
+	font-size: 1.125rem;
+}
+
+.prose table {
+	display: block;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.prose th, .prose td {
+	padding: 0.5rem 0.75rem;
+	white-space: nowrap;
+}
+
+.prose pre {
+	font-size: 0.8rem;
+}
+
+@media (min-width: 640px) {
+	.article-header h1 {
+		font-size: 2rem;
+		line-height: 1.2;
+	}
+	.prose h1 {
+		font-size: 2rem;
+	}
+	.prose h2 {
+		font-size: 1.5rem;
+	}
+	.prose h3 {
+		font-size: 1.25rem;
+	}
+	.prose th, .prose td {
+		padding: 0.75rem 1rem;
+		white-space: normal;
+	}
+	.prose pre {
+		font-size: 0.875rem;
 	}
 }
 `;
@@ -763,10 +831,11 @@ function getIndexScript(logs: LogData[]): string {
 						'<time class="log-date" datetime="' + log.date + '">' + formatDate(log.date) + '</time>' +
 						'<h2 class="log-title">' + escapeHtml(log.title) + '</h2>' +
 						(log.tags.length > 0 ? '<div class="log-tags">' + tagsHtml + moreTagsHtml + '</div>' : '') +
+						(statsHtml.length > 0 ? '<div class="log-stats log-stats-mobile">' + statsHtml.join('') + '</div>' : '') +
 					'</div>' +
 					'<div class="log-meta">' +
 						'<span class="log-relative">' + formatRelativeDate(log.date) + '</span>' +
-						(statsHtml.length > 0 ? '<div class="log-stats">' + statsHtml.join('') + '</div>' : '') +
+						(statsHtml.length > 0 ? '<div class="log-stats log-stats-desktop">' + statsHtml.join('') + '</div>' : '') +
 					'</div>' +
 				'</div>' +
 			'</a>' +
@@ -933,7 +1002,6 @@ function generateLogPageHtml(log: LogData): string {
 	<main>
 		<article class="container">
 			<header class="article-header">
-				<time datetime="${log.date}">${formatDate(log.date)}</time>
 				<h1>${escapeHtml(log.title)}</h1>
 				${log.tags.length > 0 ? `<div class="article-tags">${tagsHtml}</div>` : ""}
 			</header>
