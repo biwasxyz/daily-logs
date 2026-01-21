@@ -34,7 +34,36 @@ daily-logs/
 ./scripts/generate-log.sh 2026-01-15  # Specific date
 ```
 
-The script scans repos in `~/repos/private`, `~/repos/contrib`, `~/repos/forks` for commits and PRs.
+The script fetches commits, PRs, and issues from GitHub API.
+
+**After running the script, always fill in the summary sections:**
+
+1. **"What I Worked On"** - Write 3-6 detailed bullet points summarizing the main work:
+   - Group related commits by feature/fix/refactor
+   - Be specific about what was built, changed, or fixed
+   - Mention key technical details (e.g., "migrated from X to Y", "added N new endpoints")
+   - Include any PRs merged with context
+
+2. **"Progress Made"** - Write 2-4 bullet points on outcomes/accomplishments:
+   - Focus on what was shipped or completed
+   - Mention deployments, releases, or milestones
+   - Highlight any significant improvements
+
+Example:
+```markdown
+## What I Worked On
+
+- Migrated daily-logs from Next.js to pure static HTML/CSS/JS for simpler Cloudflare Pages deployment
+- Fixed mobile responsiveness issues including header padding, article page layout, and stats alignment
+- Added 6 new AI-powered endpoints to x402 API (smart money tracking, NFT valuation, sBTC analytics)
+- Released aibtc-mcp-server v1.2.0 with improved scaffold tool validation and UX
+
+## Progress Made
+
+- Ship Log is now live on Cloudflare Pages with full mobile support
+- x402 API expanded with AI analytics capabilities
+- Reduced daily-logs dependencies from 1229 to 139 packages
+```
 
 ### Manual
 
