@@ -2,12 +2,12 @@
 title: "Daily Summary - 2026-01-21"
 date: 2026-01-21
 categories: [daily-summary]
-tags: [commits, aibtc-mcp-server, daily-logs, x402]
+tags: [commits, aibtc-mcp-server, daily-logs, landing-page, x402]
 ---
 
 # Daily Summary: 2026-01-21
 
-**3 projects | 27 commits | 0 PRs | 0 issues**
+**4 projects | 29 commits | 0 PRs | 0 issues**
 
 ## What I Worked On
 
@@ -17,6 +17,7 @@ tags: [commits, aibtc-mcp-server, daily-logs, x402]
 - Added 6 new AI-powered endpoints to x402 API: smart money tracking, NFT portfolio valuation, sBTC analytics, and BNS domain valuation
 - Built Hiro API client with full type definitions for blockchain data integration
 - Released aibtc-mcp-server v1.2.0 with improved scaffold tool validation and UX
+- Redesigned aibtcdev landing page with new hero terminal animation and streamlined flow
 
 ## aibtc-mcp-server (3 commits)
 
@@ -41,6 +42,13 @@ tags: [commits, aibtc-mcp-server, daily-logs, x402]
 | `3a90582` | feat: add search and infinite scroll |
 | `9e5f739` | feat: migrate from Jekyll to Next.js with Ship Log UI |
 | `05afac4` | Initialize web application via create-cloudflare CLI |
+
+## landing-page (2 commits)
+
+| Hash | Message |
+| ---- | ------- |
+| `b8593ee` | fix: update hero copy to highlight Bitcoin and agentic layer |
+| `7abc5ae` | feat: redesign landing page with hero terminal and streamlined flow |
 
 ## x402 (13 commits)
 
