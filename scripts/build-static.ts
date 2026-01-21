@@ -611,8 +611,9 @@ input:focus-visible {
 	display: none !important;
 }
 
-main {
-	padding: 2rem 0;
+main.container {
+	padding-top: 2rem;
+	padding-bottom: 2rem;
 }
 `;
 }
