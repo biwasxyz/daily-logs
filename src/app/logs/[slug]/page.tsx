@@ -104,25 +104,22 @@ export default async function LogPage({ params }: PageProps) {
 			{/* Footer */}
 			<footer className="border-t border-[var(--border)] mt-auto">
 				<div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
-					<div className="flex items-center justify-between">
-						<Link
-							href="/"
-							className="inline-flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+					<Link
+						href="/"
+						className="inline-flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+					>
+						<svg
+							className="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							strokeWidth={2}
+							stroke="currentColor"
+							aria-hidden="true"
 						>
-							<svg
-								className="h-4 w-4"
-								fill="none"
-								viewBox="0 0 24 24"
-								strokeWidth={2}
-								stroke="currentColor"
-								aria-hidden="true"
-							>
-								<path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-							</svg>
-							Back to all logs
-						</Link>
-						<p className="text-sm text-[var(--muted)]">Generated with Claude Code</p>
-					</div>
+							<path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+						</svg>
+						Back to all logs
+					</Link>
 				</div>
 			</footer>
 		</div>
