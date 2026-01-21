@@ -3,36 +3,19 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev --turbopack",
-		"prebuild": "npx tsx scripts/generate-log-data.ts",
-		"build": "npm run prebuild && next build",
-		"start": "next start",
-		"lint": "next lint",
-		"generate-logs": "npx tsx scripts/generate-log-data.ts",
-		"deploy": "npm run prebuild && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-		"upload": "npm run prebuild && opennextjs-cloudflare build && opennextjs-cloudflare upload",
-		"preview": "npm run prebuild && opennextjs-cloudflare build && opennextjs-cloudflare preview",
-		"cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
+		"build": "npx tsx scripts/build-static.ts",
+		"dev": "npm run build && npx serve dist",
+		"deploy": "npm run build && wrangler pages deploy dist --project-name=daily-logs",
+		"generate-log": "./scripts/generate-log.sh"
 	},
 	"dependencies": {
-		"@opennextjs/cloudflare": "^1.14.4",
 		"gray-matter": "^4.0.3",
-		"next": "15.5.9",
-		"react": "19.1.4",
-		"react-dom": "19.1.4",
 		"remark": "^15.0.1",
 		"remark-gfm": "^4.0.1",
 		"remark-html": "^16.0.1"
 	},
 	"devDependencies": {
-		"@eslint/eslintrc": "^3",
-		"@tailwindcss/postcss": "^4",
 		"@types/node": "^20.19.30",
-		"@types/react": "^19",
-		"@types/react-dom": "^19",
-		"eslint": "^9",
-		"eslint-config-next": "15.4.6",
-		"tailwindcss": "^4",
 		"tsx": "^4.21.0",
 		"typescript": "^5",
 		"wrangler": "^4.59.3"
