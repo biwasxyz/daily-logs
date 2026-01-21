@@ -7,14 +7,16 @@ tags: [commits, aibtc-mcp-server, daily-logs, x402]
 
 # Daily Summary: 2026-01-21
 
-**3 projects | 25 commits | 0 PRs | 0 issues**
+**3 projects | 27 commits | 0 PRs | 0 issues**
 
 ## What I Worked On
 
 - Migrated daily-logs from Next.js to pure static HTML/CSS/JS for simpler Cloudflare Pages deployment
-- Fixed mobile responsiveness issues across the Ship Log UI
-- Added 6 new AI-powered endpoints to x402 API (smart money tracking, NFT valuation, sBTC analytics, BNS domain valuation)
-- Released aibtc-mcp-server v1.2.0 with improved scaffold tools
+- Fixed mobile responsiveness issues including header padding, article page layout, and stats alignment
+- Updated generate-log script to use GitHub API instead of local git commands for better cross-repo support
+- Added 6 new AI-powered endpoints to x402 API: smart money tracking, NFT portfolio valuation, sBTC analytics, and BNS domain valuation
+- Built Hiro API client with full type definitions for blockchain data integration
+- Released aibtc-mcp-server v1.2.0 with improved scaffold tool validation and UX
 
 ## aibtc-mcp-server (3 commits)
 
@@ -24,10 +26,12 @@ tags: [commits, aibtc-mcp-server, daily-logs, x402]
 | `3a7ec77` | feat: improve scaffold tools UX and validation |
 | `59877af` | feat: update scaffold service with production x402 patterns |
 
-## daily-logs (9 commits)
+## daily-logs (11 commits)
 
 | Hash | Message |
 | ---- | ------- |
+| `b960890` | post: daily summary for 2026-01-21 |
+| `3a7c2b5` | feat: update generate-log to use GitHub API |
 | `3cf3e09` | fix: improve article page and mobile layout |
 | `053505d` | fix: improve mobile responsiveness |
 | `7763147` | fix: add spacing between header and content |
@@ -58,6 +62,7 @@ tags: [commits, aibtc-mcp-server, daily-logs, x402]
 
 ## Progress Made
 
-- Ship Log is now live on Cloudflare Pages with full mobile support
-- x402 API expanded with AI analytics capabilities
-- Daily log generation now uses GitHub API instead of local repos
+- Ship Log is now live on Cloudflare Pages as a pure static site with mobile support and search functionality
+- x402 API expanded with 6 new AI analytics endpoints (merged PR #13)
+- aibtc-mcp-server v1.2.0 released with production-ready scaffold patterns
+- Reduced daily-logs complexity by migrating from Next.js to vanilla HTML/CSS/JS
