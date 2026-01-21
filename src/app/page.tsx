@@ -1,6 +1,9 @@
 import { getAllLogs, getLogStats } from "@/lib/logs";
 import LogList from "@/components/LogList";
 
+// Force static generation - no dynamic rendering on Cloudflare Workers
+export const dynamic = "force-static";
+
 function calculateStreak(logs: { date: string }[]): number {
 	if (logs.length === 0) return 0;
 

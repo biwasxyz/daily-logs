@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import { getAllLogSlugs, getLogBySlug } from "@/lib/logs";
 import type { Metadata } from "next";
 
+// Force static generation - no dynamic rendering on Cloudflare Workers
+export const dynamic = "force-static";
+export const dynamicParams = false; // 404 for paths not in generateStaticParams
+
 interface PageProps {
 	params: Promise<{ slug: string }>;
 }

@@ -6,9 +6,10 @@ Daily development logs built with Next.js and deployed to Cloudflare Workers.
 
 ```bash
 # Development
-npm run dev          # Start dev server at localhost:3000
-npm run build        # Build for production
-npm run deploy       # Build and deploy to Cloudflare
+npm run generate-logs  # Generate src/data/logs.json from markdown
+npm run dev            # Start dev server at localhost:3000
+npm run build          # Pre-generate data + build for production
+npm run deploy         # Pre-generate + build + deploy to Cloudflare
 
 # Log Generation
 ./scripts/generate-log.sh              # Generate log for today
@@ -26,12 +27,25 @@ daily-logs/
 │   │   ├── logs/[slug]/   # Individual log pages
 │   │   ├── layout.tsx     # Root layout
 │   │   └── globals.css    # Global styles
+│   ├── data/
+│   │   └── logs.json      # Pre-generated log data (gitignored, built automatically)
 │   └── lib/
-│       └── logs.ts        # Log parsing utilities
+│       └── logs.ts        # Log data utilities (imports from src/data/logs.json)
 ├── scripts/
-│   └── generate-log.sh    # Auto-generate daily logs from git
+│   ├── generate-log.sh        # Auto-generate daily logs from git
+│   └── generate-log-data.ts   # Pre-generate JSON from markdown for CF Workers
 └── public/                # Static assets
 ```
+
+## Build Process
+
+Cloudflare Workers doesn't support Node.js `fs` module at runtime. The build process:
+
+1. **Pre-generate data** (`npm run prebuild`): Parses all markdown files and outputs `src/data/logs.json`
+2. **Next.js build**: Bundles the JSON data with the application
+3. **Deploy**: Static JSON is available at runtime without filesystem access
+
+After adding new markdown logs, run `npm run generate-logs` for local development, or the build process handles it automatically.
 
 ## Log Format
 
