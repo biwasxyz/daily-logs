@@ -84,7 +84,7 @@ echo "Fetching PRs from GitHub..."
 total_prs=0
 
 # Get PRs authored and merged on this date
-gh search prs --author="$gh_user" --merged="$TARGET_DATE" --json repository,title,number,url --limit 50 2>/dev/null | \
+gh search prs --author="$gh_user" --merged --merged-at="$TARGET_DATE" --json repository,title,number,url --limit 50 2>/dev/null | \
   jq -r '.[] | "\(.repository.nameWithOwner)|\(.number)|\(.title)|\(.url)"' >> "$PRS_FILE" 2>/dev/null || true
 
 if [ -f "$PRS_FILE" ] && [ -s "$PRS_FILE" ]; then
