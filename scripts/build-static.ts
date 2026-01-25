@@ -132,25 +132,16 @@ async function parseAllLogs(): Promise<LogData[]> {
 function getStyles(): string {
 	return `
 :root {
-	--background: #fafafa;
-	--foreground: #171717;
-	--muted: #737373;
-	--border: #e5e5e5;
-	--card: #ffffff;
-	--accent: #3b82f6;
-	--accent-hover: #2563eb;
-}
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--background: #0a0a0a;
-		--foreground: #ededed;
-		--muted: #a3a3a3;
-		--border: #262626;
-		--card: #171717;
-		--accent: #60a5fa;
-		--accent-hover: #93c5fd;
-	}
+	--background: #0c0c0c;
+	--foreground: #e8e4df;
+	--muted: #8a8680;
+	--border: #2a2a28;
+	--border-hover: #3a3a38;
+	--card: #141414;
+	--card-hover: #1a1a1a;
+	--accent: #f97316;
+	--accent-hover: #fb923c;
+	--accent-soft: rgba(249, 115, 22, 0.12);
 }
 
 * {
@@ -160,66 +151,207 @@ function getStyles(): string {
 }
 
 html {
-	color-scheme: light dark;
+	color-scheme: dark;
+}
+
+/* Grain texture overlay */
+body::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+	opacity: 0.015;
+	pointer-events: none;
+	z-index: 1000;
 }
 
 body {
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+	font-weight: 300;
 	background: var(--background);
 	color: var(--foreground);
 	line-height: 1.6;
 	min-height: 100vh;
+	letter-spacing: -0.01em;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #333;
+	border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #444;
+}
+
+/* Selection color */
+::selection {
+	background: var(--accent);
+	color: var(--background);
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fade-in {
+	animation: fadeIn 0.5s ease forwards;
 }
 
 a {
-	color: var(--accent);
+	color: var(--muted);
 	text-decoration: none;
+	transition: color 0.2s ease;
 }
 
 a:hover {
-	color: var(--accent-hover);
-	text-decoration: underline;
+	color: var(--foreground);
 }
 
 .container {
-	max-width: 768px;
+	max-width: 672px;
 	margin: 0 auto;
 	padding: 0 1rem;
 }
 
+@media (min-width: 640px) {
+	.container {
+		padding: 0 1.5rem;
+	}
+}
+
+/* Navbar */
+.navbar {
+	position: sticky;
+	top: 0;
+	z-index: 50;
+	padding: 1rem;
+	background: transparent;
+	transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+	background: rgba(12, 12, 12, 0.8);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border-bottom: 1px solid rgba(42, 42, 40, 0.5);
+}
+
+.navbar-content {
+	max-width: 672px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.navbar-brand {
+	font-size: 1rem;
+	font-weight: 500;
+	color: var(--foreground);
+	letter-spacing: -0.02em;
+	transition: color 0.2s ease;
+}
+
+.navbar-brand:hover {
+	color: white;
+}
+
+.navbar-links {
+	display: flex;
+	gap: 1.5rem;
+	align-items: center;
+}
+
+.navbar-link {
+	font-size: 0.875rem;
+	font-weight: 400;
+	color: var(--muted);
+	transition: color 0.2s ease;
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
+}
+
+.navbar-link:hover {
+	color: var(--foreground);
+}
+
+.navbar-link svg {
+	width: 1rem;
+	height: 1rem;
+}
+
+.navbar-link.accent {
+	color: var(--accent);
+}
+
+.navbar-link.accent:hover {
+	color: var(--accent-hover);
+}
+
+@media (min-width: 640px) {
+	.navbar {
+		padding: 1.25rem 1.5rem;
+	}
+	.navbar-links {
+		gap: 2rem;
+	}
+}
+
 /* Header */
 .header {
-	border-bottom: 1px solid var(--border);
-	background: var(--card);
+	background: transparent;
 }
 
 .header-content {
-	padding-top: 1.5rem;
-	padding-bottom: 1.5rem;
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+	animation: fadeIn 0.6s ease forwards;
 }
 
 .header h1 {
-	font-size: 1.5rem;
-	font-weight: 700;
-	letter-spacing: -0.025em;
+	font-size: 1.75rem;
+	font-weight: 500;
+	letter-spacing: -0.03em;
+	color: var(--foreground);
 }
 
 .header p {
-	margin-top: 0.25rem;
+	margin-top: 0.5rem;
 	font-size: 1rem;
 	color: var(--muted);
+	font-weight: 300;
 }
 
 @media (min-width: 640px) {
 	.header-content {
-		padding-top: 2.5rem;
-		padding-bottom: 2.5rem;
+		padding-top: 3rem;
+		padding-bottom: 3rem;
 	}
 	.header h1 {
-		font-size: 2rem;
+		font-size: 2.25rem;
 	}
 	.header p {
-		margin-top: 0.5rem;
+		margin-top: 0.75rem;
 		font-size: 1.125rem;
 	}
 }
@@ -228,50 +360,65 @@ a:hover {
 .stats {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
-	gap: 1rem;
-	margin-bottom: 2rem;
+	gap: 0.75rem;
+	margin-bottom: 2.5rem;
+	animation: fadeIn 0.6s ease 0.1s forwards;
+	opacity: 0;
 }
 
 @media (min-width: 640px) {
 	.stats {
 		grid-template-columns: repeat(4, 1fr);
+		gap: 1rem;
 	}
 }
 
 .stat-card {
-	border: 1px solid var(--border);
 	background: var(--card);
-	border-radius: 0.5rem;
-	padding: 0.75rem;
+	border-radius: 0.75rem;
+	padding: 1rem;
 	text-align: center;
+	transition: background 0.2s ease;
+}
+
+.stat-card:hover {
+	background: var(--card-hover);
 }
 
 .stat-value {
 	font-size: 1.5rem;
-	font-weight: 700;
+	font-weight: 500;
 	font-variant-numeric: tabular-nums;
+	color: var(--foreground);
+	letter-spacing: -0.02em;
 }
 
 .stat-label {
 	font-size: 0.75rem;
 	color: var(--muted);
+	font-weight: 400;
+	margin-top: 0.25rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
 }
 
 @media (min-width: 640px) {
 	.stat-card {
-		padding: 1rem;
+		padding: 1.25rem;
 	}
 	.stat-value {
-		font-size: 1.875rem;
+		font-size: 2rem;
 	}
 	.stat-label {
-		font-size: 0.875rem;
+		font-size: 0.75rem;
 	}
 }
 
 /* Search */
 .search-container {
-	margin-bottom: 1.5rem;
+	margin-bottom: 2rem;
+	animation: fadeIn 0.6s ease 0.2s forwards;
+	opacity: 0;
 }
 
 .search-wrapper {
@@ -280,28 +427,39 @@ a:hover {
 
 .search-icon {
 	position: absolute;
-	left: 0.75rem;
+	left: 1rem;
 	top: 50%;
 	transform: translateY(-50%);
 	width: 1rem;
 	height: 1rem;
 	color: var(--muted);
+	transition: color 0.2s ease;
+}
+
+.search-wrapper:focus-within .search-icon {
+	color: var(--accent);
 }
 
 .search-input {
 	width: 100%;
-	padding: 0.625rem 1rem 0.625rem 2.5rem;
+	padding: 0.875rem 1rem 0.875rem 2.75rem;
 	border: 1px solid var(--border);
-	border-radius: 0.5rem;
+	border-radius: 0.75rem;
 	background: var(--card);
 	color: var(--foreground);
 	font-size: 0.875rem;
+	font-weight: 300;
+	transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.search-input:hover {
+	border-color: var(--border-hover);
 }
 
 .search-input:focus {
 	outline: none;
-	box-shadow: 0 0 0 2px var(--accent);
-	border-color: transparent;
+	border-color: var(--accent);
+	background: var(--card-hover);
 }
 
 .search-input::placeholder {
@@ -309,7 +467,7 @@ a:hover {
 }
 
 .search-results {
-	margin-top: 0.5rem;
+	margin-top: 0.75rem;
 	font-size: 0.875rem;
 	color: var(--muted);
 }
@@ -318,19 +476,28 @@ a:hover {
 .log-list {
 	display: flex;
 	flex-direction: column;
-	gap: 1rem;
+	gap: 0;
 }
 
 .log-card {
-	border: 1px solid var(--border);
-	background: var(--card);
-	border-radius: 0.5rem;
-	padding: 1rem;
-	transition: box-shadow 0.15s;
+	background: transparent;
+	border-radius: 0.75rem;
+	padding: 1.25rem 1rem;
+	margin: 0 -1rem;
+	transition: background 0.2s ease;
+	animation: fadeIn 0.5s ease forwards;
+	opacity: 0;
 }
 
+.log-card:nth-child(1) { animation-delay: 0.25s; }
+.log-card:nth-child(2) { animation-delay: 0.3s; }
+.log-card:nth-child(3) { animation-delay: 0.35s; }
+.log-card:nth-child(4) { animation-delay: 0.4s; }
+.log-card:nth-child(5) { animation-delay: 0.45s; }
+.log-card:nth-child(n+6) { animation-delay: 0.5s; }
+
 .log-card:hover {
-	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+	background: var(--card);
 }
 
 .log-card a {
@@ -353,57 +520,68 @@ a:hover {
 .log-date {
 	font-size: 0.75rem;
 	color: var(--muted);
+	font-weight: 400;
 }
 
 .log-title {
 	font-size: 1rem;
-	font-weight: 600;
-	transition: color 0.15s;
-	margin-top: 0.125rem;
+	font-weight: 400;
+	color: var(--foreground);
+	transition: color 0.2s ease;
+	margin-top: 0.25rem;
+	letter-spacing: -0.01em;
 }
 
 @media (min-width: 640px) {
 	.log-card {
-		padding: 1.25rem;
+		padding: 1.5rem 1.5rem;
+		margin: 0 -1.5rem;
 	}
 	.log-header {
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: flex-start;
-		gap: 1rem;
+		gap: 1.5rem;
 	}
 	.log-date {
 		font-size: 0.875rem;
 	}
 	.log-title {
 		font-size: 1.125rem;
-		margin-top: 0.25rem;
+		margin-top: 0.375rem;
 	}
 }
 
 .log-card:hover .log-title {
-	color: var(--accent);
+	color: white;
 }
 
 .log-tags {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.375rem;
-	margin-top: 0.5rem;
+	gap: 0.5rem;
+	margin-top: 0.75rem;
 }
 
 .tag {
 	display: inline-flex;
 	align-items: center;
-	padding: 0.125rem 0.5rem;
+	padding: 0.25rem 0.625rem;
+	background: var(--card);
+	border-radius: 0.375rem;
+	font-size: 0.6875rem;
+	font-weight: 400;
+	color: var(--muted);
+	transition: background 0.2s ease, color 0.2s ease;
+}
+
+.log-card:hover .tag {
 	background: var(--border);
-	border-radius: 9999px;
-	font-size: 0.625rem;
-	font-weight: 500;
+	color: var(--foreground);
 }
 
 .tag-more {
-	font-size: 0.625rem;
+	font-size: 0.6875rem;
 	color: var(--muted);
 }
 
@@ -414,15 +592,21 @@ a:hover {
 .log-relative {
 	font-size: 0.875rem;
 	color: var(--muted);
+	font-weight: 300;
 }
 
 .log-stats {
 	display: flex;
-	gap: 0.75rem;
+	gap: 1rem;
 	margin-top: 0.5rem;
 	font-size: 0.75rem;
 	color: var(--muted);
 	font-variant-numeric: tabular-nums;
+	font-weight: 400;
+}
+
+.log-stats span {
+	opacity: 0.8;
 }
 
 .log-stats-mobile {
@@ -436,7 +620,7 @@ a:hover {
 
 @media (min-width: 640px) {
 	.tag {
-		padding: 0.125rem 0.625rem;
+		padding: 0.25rem 0.75rem;
 		font-size: 0.75rem;
 	}
 	.tag-more {
@@ -458,40 +642,43 @@ a:hover {
 
 /* Empty State */
 .empty-state {
-	border: 1px solid var(--border);
 	background: var(--card);
-	border-radius: 0.5rem;
-	padding: 2rem;
+	border-radius: 0.75rem;
+	padding: 3rem 2rem;
 	text-align: center;
 	color: var(--muted);
+	font-weight: 300;
 }
 
 /* Load More */
 .load-more-container {
 	display: flex;
 	justify-content: center;
-	padding-top: 1.5rem;
+	padding-top: 2rem;
+	padding-bottom: 1rem;
 }
 
 .load-more-btn {
-	padding: 0.625rem 1.5rem;
+	padding: 0.75rem 2rem;
 	border: 1px solid var(--border);
-	background: var(--card);
+	background: transparent;
 	border-radius: 0.5rem;
 	font-size: 0.875rem;
-	font-weight: 500;
-	color: var(--foreground);
+	font-weight: 400;
+	color: var(--muted);
 	cursor: pointer;
-	transition: background 0.15s;
+	transition: all 0.2s ease;
 }
 
 .load-more-btn:hover {
-	background: var(--border);
+	border-color: var(--border-hover);
+	color: var(--foreground);
+	background: var(--card);
 }
 
 .load-more-btn:focus {
 	outline: none;
-	box-shadow: 0 0 0 2px var(--accent);
+	border-color: var(--accent);
 }
 
 /* Article Page */
@@ -501,7 +688,8 @@ a:hover {
 	gap: 0.5rem;
 	font-size: 0.875rem;
 	color: var(--muted);
-	transition: color 0.15s;
+	font-weight: 400;
+	transition: color 0.2s ease;
 }
 
 .back-link:hover {
@@ -512,115 +700,158 @@ a:hover {
 .back-link svg {
 	width: 1rem;
 	height: 1rem;
+	transition: transform 0.2s ease;
+}
+
+.back-link:hover svg {
+	transform: translateX(-2px);
 }
 
 .article-header {
-	margin-bottom: 2rem;
+	margin-bottom: 2.5rem;
+	padding-bottom: 2rem;
+	border-bottom: 1px solid var(--border);
+	animation: fadeIn 0.6s ease forwards;
 }
 
 .article-header time {
 	font-size: 0.875rem;
 	color: var(--muted);
+	font-weight: 400;
 }
 
 .article-header h1 {
-	margin-top: 0.5rem;
+	margin-top: 0.75rem;
 	font-size: 2rem;
-	font-weight: 700;
-	letter-spacing: -0.025em;
+	font-weight: 500;
+	letter-spacing: -0.03em;
+	color: var(--foreground);
+	line-height: 1.2;
 }
 
 .article-tags {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.5rem;
-	margin-top: 1rem;
+	margin-top: 1.25rem;
 }
 
 .article-tags .tag {
-	padding: 0.25rem 0.75rem;
-	font-size: 0.875rem;
+	padding: 0.375rem 0.875rem;
+	font-size: 0.8125rem;
+	background: var(--card);
+	color: var(--muted);
+}
+
+.article-tags .tag:hover {
+	background: var(--border);
+	color: var(--foreground);
 }
 
 /* Prose */
 .prose {
 	line-height: 1.75;
+	font-weight: 300;
+	animation: fadeIn 0.6s ease 0.1s forwards;
+	opacity: 0;
 }
 
 .prose h1 {
 	font-size: 2rem;
-	font-weight: 700;
-	margin-top: 2rem;
+	font-weight: 500;
+	margin-top: 2.5rem;
 	margin-bottom: 1rem;
+	letter-spacing: -0.02em;
+	color: var(--foreground);
 }
 
 .prose h2 {
 	font-size: 1.5rem;
-	font-weight: 600;
-	margin-top: 2rem;
-	margin-bottom: 0.75rem;
-	padding-bottom: 0.5rem;
+	font-weight: 500;
+	margin-top: 2.5rem;
+	margin-bottom: 1rem;
+	padding-bottom: 0.75rem;
 	border-bottom: 1px solid var(--border);
+	letter-spacing: -0.02em;
+	color: var(--foreground);
 }
 
 .prose h3 {
 	font-size: 1.25rem;
-	font-weight: 600;
-	margin-top: 1.5rem;
-	margin-bottom: 0.5rem;
+	font-weight: 500;
+	margin-top: 2rem;
+	margin-bottom: 0.75rem;
+	letter-spacing: -0.01em;
+	color: var(--foreground);
 }
 
 .prose p {
-	margin-bottom: 1rem;
+	margin-bottom: 1.25rem;
+	color: var(--muted);
 }
 
 .prose ul, .prose ol {
-	margin-bottom: 1rem;
+	margin-bottom: 1.25rem;
 	padding-left: 1.5rem;
+	color: var(--muted);
 }
 
 .prose li {
-	margin-bottom: 0.25rem;
+	margin-bottom: 0.5rem;
+}
+
+.prose li::marker {
+	color: var(--border-hover);
 }
 
 .prose code {
-	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-	font-size: 0.875em;
-	background: var(--border);
-	padding: 0.125rem 0.375rem;
-	border-radius: 0.25rem;
+	font-family: 'SF Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 0.85em;
+	background: var(--card);
+	padding: 0.2rem 0.4rem;
+	border-radius: 0.375rem;
+	color: var(--foreground);
 }
 
 .prose pre {
 	background: var(--card);
-	border: 1px solid var(--border);
-	border-radius: 0.5rem;
-	padding: 1rem;
+	border-radius: 0.75rem;
+	padding: 1.25rem;
 	overflow-x: auto;
-	margin-bottom: 1rem;
+	margin-bottom: 1.5rem;
 }
 
 .prose pre code {
 	background: none;
 	padding: 0;
+	font-size: 0.875rem;
 }
 
 .prose table {
 	width: 100%;
 	border-collapse: collapse;
-	margin-bottom: 1.5rem;
+	margin-bottom: 2rem;
 	font-size: 0.875rem;
 }
 
 .prose th, .prose td {
-	padding: 0.75rem 1rem;
+	padding: 0.875rem 1rem;
 	text-align: left;
 	border-bottom: 1px solid var(--border);
 }
 
 .prose th {
-	font-weight: 600;
+	font-weight: 500;
+	color: var(--foreground);
 	background: var(--card);
+}
+
+.prose td {
+	color: var(--muted);
+}
+
+.prose tr {
+	transition: background 0.15s ease;
 }
 
 .prose tr:hover td {
@@ -628,32 +859,43 @@ a:hover {
 }
 
 .prose blockquote {
-	border-left: 3px solid var(--accent);
-	padding-left: 1rem;
+	border-left: 2px solid var(--accent);
+	padding-left: 1.25rem;
 	font-style: italic;
 	color: var(--muted);
-	margin-bottom: 1rem;
+	margin-bottom: 1.5rem;
+	margin-left: 0;
 }
 
 .prose strong {
-	font-weight: 600;
+	font-weight: 500;
+	color: var(--foreground);
+}
+
+.prose a {
+	color: var(--accent);
+	transition: color 0.2s ease;
+}
+
+.prose a:hover {
+	color: var(--accent-hover);
 }
 
 .prose hr {
 	border: none;
 	border-top: 1px solid var(--border);
-	margin: 2rem 0;
+	margin: 3rem 0;
 }
 
 /* Footer */
 .footer {
 	border-top: 1px solid var(--border);
-	margin-top: auto;
+	margin-top: 4rem;
 }
 
 .footer-content {
-	padding-top: 1.5rem;
-	padding-bottom: 1.5rem;
+	padding-top: 2rem;
+	padding-bottom: 2rem;
 }
 
 /* Focus styles */
@@ -690,21 +932,21 @@ input:focus-visible {
 }
 
 main.container {
-	padding-top: 1.5rem;
-	padding-bottom: 1.5rem;
+	padding-top: 2rem;
+	padding-bottom: 2rem;
 }
 
 @media (min-width: 640px) {
 	main.container {
-		padding-top: 2rem;
-		padding-bottom: 2rem;
+		padding-top: 2.5rem;
+		padding-bottom: 3rem;
 	}
 }
 
 /* Article page mobile styles */
 .article-header h1 {
 	font-size: 1.5rem;
-	line-height: 1.3;
+	line-height: 1.25;
 }
 
 .prose h1 {
@@ -726,18 +968,19 @@ main.container {
 }
 
 .prose th, .prose td {
-	padding: 0.5rem 0.75rem;
+	padding: 0.625rem 0.875rem;
 	white-space: nowrap;
 }
 
 .prose pre {
 	font-size: 0.8rem;
+	padding: 1rem;
 }
 
 @media (min-width: 640px) {
 	.article-header h1 {
-		font-size: 2rem;
-		line-height: 1.2;
+		font-size: 2.25rem;
+		line-height: 1.15;
 	}
 	.prose h1 {
 		font-size: 2rem;
@@ -749,12 +992,22 @@ main.container {
 		font-size: 1.25rem;
 	}
 	.prose th, .prose td {
-		padding: 0.75rem 1rem;
+		padding: 0.875rem 1rem;
 		white-space: normal;
 	}
 	.prose pre {
 		font-size: 0.875rem;
+		padding: 1.25rem;
 	}
+}
+
+/* Accent link style for special links */
+.accent-link {
+	color: var(--accent) !important;
+}
+
+.accent-link:hover {
+	color: var(--accent-hover) !important;
 }
 `;
 }
@@ -909,13 +1162,32 @@ function generateIndexHtml(logs: LogData[]): string {
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="Every commit. Every day.">
-	<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-	<meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+	<meta name="theme-color" content="#0c0c0c">
 	<title>Ship Log</title>
 	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 	<style>${getStyles()}</style>
 </head>
 <body>
+	<nav class="navbar" id="navbar">
+		<div class="navbar-content">
+			<a href="/" class="navbar-brand">Ship Log</a>
+			<div class="navbar-links">
+				<a href="https://biwas.xyz" class="navbar-link" target="_blank" rel="noopener">
+					Portfolio
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M7 17L17 7M17 7H7M17 7V17"/>
+					</svg>
+				</a>
+				<a href="https://github.com/biwasxyz" class="navbar-link" target="_blank" rel="noopener">
+					<svg viewBox="0 0 24 24" fill="currentColor">
+						<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+					</svg>
+					GitHub
+				</a>
+			</div>
+		</div>
+	</nav>
+
 	<header class="header">
 		<div class="container header-content">
 			<h1>Ship Log</h1>
@@ -966,6 +1238,21 @@ function generateIndexHtml(logs: LogData[]): string {
 	</main>
 
 	<script>${getIndexScript(logs)}</script>
+	<script>
+		(function() {
+			var navbar = document.getElementById('navbar');
+			var scrolled = false;
+			window.addEventListener('scroll', function() {
+				if (window.scrollY > 20 && !scrolled) {
+					navbar.classList.add('scrolled');
+					scrolled = true;
+				} else if (window.scrollY <= 20 && scrolled) {
+					navbar.classList.remove('scrolled');
+					scrolled = false;
+				}
+			});
+		})();
+	</script>
 </body>
 </html>`;
 }
@@ -981,15 +1268,34 @@ function generateLogPageHtml(log: LogData): string {
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="Development log from ${log.date}">
-	<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-	<meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+	<meta name="theme-color" content="#0c0c0c">
 	<title>${escapeHtml(log.title)} | Ship Log</title>
 	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 	<style>${getStyles()}</style>
 </head>
 <body>
+	<nav class="navbar" id="navbar">
+		<div class="navbar-content">
+			<a href="/" class="navbar-brand">Ship Log</a>
+			<div class="navbar-links">
+				<a href="https://biwas.xyz" class="navbar-link" target="_blank" rel="noopener">
+					Portfolio
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M7 17L17 7M17 7H7M17 7V17"/>
+					</svg>
+				</a>
+				<a href="https://github.com/biwasxyz" class="navbar-link" target="_blank" rel="noopener">
+					<svg viewBox="0 0 24 24" fill="currentColor">
+						<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+					</svg>
+					GitHub
+				</a>
+			</div>
+		</div>
+	</nav>
+
 	<header class="header">
-		<div class="container" style="padding: 1.5rem 1rem;">
+		<div class="container" style="padding-top: 1rem; padding-bottom: 1rem;">
 			<a href="/" class="back-link">
 				<svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
 					<path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
@@ -1022,6 +1328,22 @@ function generateLogPageHtml(log: LogData): string {
 			</a>
 		</div>
 	</footer>
+
+	<script>
+		(function() {
+			var navbar = document.getElementById('navbar');
+			var scrolled = false;
+			window.addEventListener('scroll', function() {
+				if (window.scrollY > 20 && !scrolled) {
+					navbar.classList.add('scrolled');
+					scrolled = true;
+				} else if (window.scrollY <= 20 && scrolled) {
+					navbar.classList.remove('scrolled');
+					scrolled = false;
+				}
+			});
+		})();
+	</script>
 </body>
 </html>`;
 }
