@@ -1151,11 +1151,6 @@ function getIndexScript(logs: LogData[]): string {
 }
 
 function generateIndexHtml(logs: LogData[]): string {
-	const totalCommits = logs.reduce((acc, l) => acc + l.commits, 0);
-	const totalPRs = logs.reduce((acc, l) => acc + l.prs, 0);
-	const avgCommits = logs.length > 0 ? (totalCommits / logs.length).toFixed(1) : "0";
-	const streak = calculateStreak(logs);
-
 	return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1188,34 +1183,8 @@ function generateIndexHtml(logs: LogData[]): string {
 		</div>
 	</nav>
 
-	<header class="header">
-		<div class="container header-content">
-			<h1>Ship Log</h1>
-			<p>Every commit. Every day.</p>
-		</div>
-	</header>
-
-	<main class="container">
-		<div class="stats">
-			<div class="stat-card">
-				<div class="stat-value">${totalCommits}</div>
-				<div class="stat-label">Commits</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-value">${totalPRs}</div>
-				<div class="stat-label">PRs Merged</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-value">${avgCommits}</div>
-				<div class="stat-label">Avg/Day</div>
-			</div>
-			<div class="stat-card">
-				<div class="stat-value">${streak}</div>
-				<div class="stat-label">Day Streak</div>
-			</div>
-		</div>
-
-		<div class="search-container">
+	<main class="container" style="padding-top: 1.5rem;">
+		<div class="search-container" style="margin-bottom: 2rem;">
 			<label for="search" class="sr-only">Search logs</label>
 			<div class="search-wrapper">
 				<svg class="search-icon" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
